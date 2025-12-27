@@ -1,5 +1,7 @@
 # 🚀 Asteroids Game Clone
 
+![asteroids](https://github.com/user-attachments/assets/7b3d35c7-fe5e-4684-9d6d-ef5a39e5f90c)
+
 A classic arcade space shooter game recreated using **Python** and **Pygame**. This project demonstrates object-oriented programming, game loop logic, collision detection, and vector mathematics.
 
 ## 🎮 Game Features
@@ -27,7 +29,7 @@ A classic arcade space shooter game recreated using **Python** and **Pygame**. T
 
 ## ⚙️ Installation & How to Run
 
-1.  **Clone the repository:**
+1.  **Clone the repository**
 
 2.  **Create a virtual environment (Recommended):**
     ```bash
