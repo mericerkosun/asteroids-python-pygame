@@ -1,26 +1,68 @@
 import pygame
+import sys
+from shot import Shot
 from constants import *
-from logger import log_state  # 1. Adım: log_state fonksiyonunu içe aktardık
+from logger import log_state, log_event
+from player import Player
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
 
 def main():
-    pygame.init() # 2. Adım: Pygame'i başlattık
-    
-    # 3. Adım: Ekran genişliği ve yüksekliğini ayarladık (pencere oluşturduk)
+    pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    
-    # 4. Adım: Sonsuz oyun döngüsü (Game Loop)
+
+    x = SCREEN_WIDTH / 2
+    y = SCREEN_HEIGHT / 2
+
+    clock = pygame.time.Clock()
+    dt = 0
+
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    asteroids = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
+
+    Shot.containers = (shots,updatable,drawable)
+    Asteroid.containers = (asteroids, updatable, drawable)
+    Player.containers = (updatable,drawable)
+    AsteroidField.containers = (updatable)
+
+    AsteroidField()
+    player = Player(x,y)
+
     while True:
-        # 5. Adım: Otomatik kontrol için log alıyoruz
-        log_state()
-        
+        log_state() # Otomatik kontrol için gerekli
+
         for event in pygame.event.get():
-    	    if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT:
                 return
-        # 6. Adım: Ekranı siyaha boyuyoruz
+
         screen.fill("black")
-        
-        # 7. Adım: Ekranı yeniliyoruz (Bunu her zaman en son yapın!)
+
+        updatable.update(dt)
+
+        for asteroid in asteroids:
+            # ...her bir mermiyi kontrol et
+            for shot in shots:
+                # Çarpışma var mı?
+                if asteroid.collides_with(shot):
+                    log_event("asteroid_shot") # Olayı kaydet
+                    shot.kill()      # Mermiyi yok et
+                    asteroid.split()
+
+        for asteroid in asteroids:
+            if asteroid.collides_with(player):
+                log_event("player_hit")
+                print("Game over!")
+                sys.exit()
+
+        for thing in drawable:
+            thing.draw(screen)
+
         pygame.display.flip()
+
+        # Süre hesaplaması döngünün sonunda
+        dt = clock.tick(60) / 1000
 
 if __name__ == "__main__":
     main()
